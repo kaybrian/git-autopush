@@ -1,8 +1,0 @@
-Metadata-Version: 2.1
-Name: git-autopush
-Version: 0.0.1
-Summary: Automates git functions: add, commit, and push.
-Home-page: https://github.com/chyna-gvng/git-autopush.git
-Author: Chyna
-Author-email: angoyewally@gmail.com
-License-File: LICENSE
