@@ -6,7 +6,7 @@ setup(
     author='Chyna',
     author_email='angoyewally@gmail.com',
     description='Automates git functions: add, commit, and push.',
-    url='https://github.com/yourusername/autopush',
+    url='https://github.com/chyna-gvng/git-autopush.git',
     packages=['autopush'],
     entry_points={
         'console_scripts': [
