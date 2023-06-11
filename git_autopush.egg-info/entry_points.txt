@@ -1,0 +1,2 @@
+[console_scripts]
+autopush = autopush.autopush:main
