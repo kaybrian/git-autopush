@@ -43,7 +43,8 @@ class GitEventHandler(FileSystemEventHandler):
         self.repo.remote().push()
 
 
-def monitor_directory(directory):
+def main():
+    directory = os.path.dirname(os.path.realpath(__file__))
     repo = Repo(directory)
     event_handler = GitEventHandler(repo)
     observer = Observer()
@@ -60,5 +61,4 @@ def monitor_directory(directory):
 
 
 if __name__ == "__main__":
-    directory = os.path.dirname(os.path.realpath(__file__))
-    monitor_directory(directory)
+    main()
