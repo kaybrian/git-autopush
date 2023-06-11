@@ -45,7 +45,7 @@ class GitEventHandler(FileSystemEventHandler):
 
 
 def main():
-    directory = os.path.dirname(os.path.realpath(__file__))
+    directory = os.getcwd()
     repo = Repo(directory)
     event_handler = GitEventHandler(repo)
     observer = Observer()
