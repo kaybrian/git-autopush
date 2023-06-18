@@ -7,3 +7,8 @@ A python package to automate basic git functions.
 git config --global user.name "name"
 git config --global user.email "example@email.com"
 ````
+
+- Configure git to store credential
+````
+git config --global credential.helper store
+````
