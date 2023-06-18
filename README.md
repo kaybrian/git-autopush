@@ -20,6 +20,9 @@ git clone https://github.com/chyna-gvng/git-autopush.git
 ````
 
 - cd into repo:
+````
+cd git-autopush
+````
 
 - Install locally
 ````
