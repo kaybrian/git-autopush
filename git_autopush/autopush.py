@@ -27,8 +27,10 @@ def monitor_directory(path="."):
     signal.signal(signal.SIGINT, exit_gracefully)
 
     change_event = threading.Event()  # Event object to signal changes
+    processed_change = False  # Flag to indicate if a change has been processed
 
     def file_monitor():
+        nonlocal processed_change
         while True:
             current_files = {filename: hash_file(filename) for filename in files.keys()}
 
@@ -43,18 +45,23 @@ def monitor_directory(path="."):
                 for file in added_files:
                     commit_message = f"Created {os.path.basename(file)}"
                     add_and_push(file, commit_message)
+                    processed_change = True
 
                 for file in deleted_files:
                     commit_message = f"Deleted {os.path.basename(file)}"
                     add_and_push(file, commit_message)
+                    processed_change = True
 
                 for file in modified_files:
                     commit_message = f"Updated {os.path.basename(file)}"
                     add_and_push(file, commit_message)
+                    processed_change = True
 
                 files.update(current_files)
 
-                change_event.set()  # Signal changes detected
+                if processed_change:
+                    change_event.set()  # Signal changes detected
+                    processed_change = False
 
             time.sleep(1)
 
