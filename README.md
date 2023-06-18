@@ -30,3 +30,7 @@ pip install .
 ````
 
 ### Usage
+In the root of the repo you want to work on:
+````
+git-autopush
+````
