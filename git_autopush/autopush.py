@@ -3,6 +3,7 @@ import time
 import subprocess
 import signal
 import sys
+import threading
 
 def monitor_directory(path="."):
     if not os.path.exists(os.path.join(path, ".git")):
@@ -24,7 +25,9 @@ def monitor_directory(path="."):
 
     signal.signal(signal.SIGINT, exit_gracefully)
 
-    try:
+    change_event = threading.Event()  # Event object to signal changes
+
+    def file_monitor():
         while True:
             current_files = {filename: os.stat(filename).st_mtime for filename in files.keys()}
 
@@ -47,11 +50,23 @@ def monitor_directory(path="."):
                 commit_message = f"Updated {os.path.basename(file)}"
                 add_and_push(file, commit_message)
 
-            files = current_files
-            time.sleep(1) # Sleep for 1 second before checking again
+            files.update(current_files)
 
-    except KeyboardInterrupt:
-        exit_gracefully(None, None)
+            if added_files or deleted_files or modified_files:
+                change_event.set()  # Signal changes detected
+
+            time.sleep(1)
+
+    threading.Thread(target=file_monitor, daemon=True).start()
+
+    while True:
+        change_event.wait()  # Wait for changes to be detected
+
+        # Reset the event for the next round of changes
+        change_event.clear()
+
+        # Sleep indefinitely until changes are detected again
+        change_event.wait()
 
 def add_and_push(file, commit_message):
     subprocess.run(["git", "add", file])
@@ -60,3 +75,4 @@ def add_and_push(file, commit_message):
 
 if __name__ == "__main__":
     monitor_directory()
+
