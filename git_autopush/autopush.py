@@ -2,16 +2,20 @@ import os
 import time
 import subprocess
 
-def monitor_directory():
-    path = os.getcwd()  # Get the current working directory
+def monitor_directory(path="."):
     if not os.path.exists(os.path.join(path, ".git")):
         print("Directory is not a git repo!")
         return
 
     files = {}
 
+    for root, dirs, filenames in os.walk(path):
+        for filename in filenames:
+            full_path = os.path.join(root, filename)
+            files[full_path] = os.stat(full_path).st_mtime
+
     while True:
-        current_files = {filename: os.stat(filename).st_mtime for filename in os.listdir(path)}
+        current_files = {filename: os.stat(filename).st_mtime for filename in files.keys()}
 
         added_files = current_files.keys() - files.keys()
         deleted_files = files.keys() - current_files.keys()
@@ -42,3 +46,4 @@ def add_and_push(file, commit_message):
 
 if __name__ == "__main__":
     monitor_directory()
+
