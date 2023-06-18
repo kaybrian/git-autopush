@@ -4,6 +4,10 @@ import subprocess
 
 def monitor_directory():
     path = os.getcwd()  # Get the current working directory
+    if not os.path.exists(os.path.join(path, ".git")):
+        print("Directory is not a git repo!")
+        return
+
     files = {}
 
     while True:
