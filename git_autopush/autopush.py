@@ -25,15 +25,15 @@ def monitor_directory(path="."):
         }
 
         for file in added_files:
-            commit_message = f"Created {file}"
+            commit_message = f"Created {os.path.basename(file)}"
             add_and_push(file, commit_message)
 
         for file in deleted_files:
-            commit_message = f"Deleted {file}"
+            commit_message = f"Deleted {os.path.basename(file)}"
             add_and_push(file, commit_message)
 
         for file in modified_files:
-            commit_message = f"Updated {file}"
+            commit_message = f"Updated {os.path.basename(file)}"
             add_and_push(file, commit_message)
 
         files = current_files
