@@ -28,3 +28,5 @@ cd git-autopush
 ````
 pip install .
 ````
+
+### Usage
