@@ -9,6 +9,7 @@ import threading
 # ANSI escape codes for colors
 RED = "\033[91m"
 GREEN = "\033[92m"
+YELLOW = "\033[93m"
 WHITE = "\033[0m"
 
 def monitor_directory(path="."):
@@ -76,7 +77,7 @@ def monitor_directory(path="."):
                     result = subprocess.run(["git", "push"], capture_output=True, text=True)
                     
                     if result.returncode == 0:
-                        print(f"Successfully pushed {file}")
+                        print(f"{YELLOW}Successfully pushed {file}{WHITE}")
                     else:
                         print(result.stderr)
 
