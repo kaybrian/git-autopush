@@ -12,3 +12,5 @@ git config --global user.email "example@email.com"
 ````
 git config --global credential.helper store
 ````
+
+### Developer Setup
