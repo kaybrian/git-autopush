@@ -51,7 +51,7 @@ def monitor_directory(path="."):
 
             # Sleep only if there are no deletion, creation, or updation activities before the next check
             if len(added_files) == 0 and len(deleted_files) == 0 and len(modified_files) == 0:
-                time.sleep(5)
+                time.sleep(30)
 
     except KeyboardInterrupt:
         exit_gracefully(None, None)
