@@ -8,18 +8,18 @@ git config --global user.name "name"
 git config --global user.email "example@email.com"
 ````
 
-- configure git to store credential
+- Configure git to store credential
 ````
 git config --global credential.helper store
 ````
 
 ### Developer Setup
-- clone repo:
+- Clone repo:
 ````
 git clone https://github.com/chyna-gvng/git-autopush.git
 ````
 
-- cd into repo:
+- CD into repo:
 ````
 cd git-autopush
 ````
