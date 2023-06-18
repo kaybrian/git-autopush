@@ -30,7 +30,7 @@ pip install .
 ````
 
 ### Usage
-In the root of the repo you want to work on(leave it to run in the background):
+In the root of the repo you want to work on (leave it to run in the background):
 ````
 git-autopush
 ````
