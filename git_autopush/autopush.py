@@ -72,7 +72,12 @@ def monitor_directory(path="."):
             with open(os.devnull, "w") as devnull:
                 subprocess.run(["git", "add", file], stdout=devnull, stderr=devnull)
                 subprocess.run(["git", "commit", "-m", commit_message], stdout=devnull, stderr=devnull)
-                subprocess.run(["git", "push"], stdout=devnull, stderr=devnull)
+                result = subprocess.run(["git", "push"], capture_output=True, text=True)
+                
+                if result.returncode == 0:
+                    print(f"Successfully pushed {file}")
+                else:
+                    print(result.stderr)
 
     while True:
         change_event.wait()  # Wait for changes to be detected
