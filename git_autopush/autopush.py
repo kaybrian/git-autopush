@@ -6,6 +6,10 @@ import sys
 import hashlib
 import threading
 
+# ANSI escape codes for colors
+RED = "\033[91m"
+GREEN = "\033[92m"
+
 def monitor_directory(path="."):
     if not os.path.exists(os.path.join(path, ".git")):
         print("Directory is not a Git repo!")
