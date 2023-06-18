@@ -26,7 +26,7 @@ def monitor_directory(path="."):
             files[full_path] = hash_file(full_path)
 
     def exit_gracefully(signal, frame):
-        print(f"{GREEN}\nGoodbye!")
+        print(f"{GREEN}\nGoodbye!{WHITE}")
         sys.exit(0)
 
     signal.signal(signal.SIGINT, exit_gracefully)
