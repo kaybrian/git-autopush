@@ -49,7 +49,7 @@ def monitor_directory(path="."):
 
             files = current_files
 
-            # Sleep only if there are no deletion, creation, or updation activities
+            # Sleep only if there are no deletion, creation, or updation activities before the next check
             if len(added_files) == 0 and len(deleted_files) == 0 and len(modified_files) == 0:
                 time.sleep(5)
 
