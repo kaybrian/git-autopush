@@ -14,7 +14,7 @@ git config --global credential.helper store
 ````
 
 ### Developer Setup
-- Clone repo:
+- clone repo:
 ````
 git clone https://github.com/chyna-gvng/git-autopush.git
 ````
