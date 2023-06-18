@@ -8,7 +8,7 @@ git config --global user.name "name"
 git config --global user.email "example@email.com"
 ````
 
-- Configure git to store credential
+- configure git to store credential
 ````
 git config --global credential.helper store
 ````
