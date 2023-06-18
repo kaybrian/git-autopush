@@ -34,3 +34,5 @@ In the root of the repo you want to work on(leave it to run in the background):
 ````
 git-autopush
 ````
+To exit, press:  
+`CTRL + C`
