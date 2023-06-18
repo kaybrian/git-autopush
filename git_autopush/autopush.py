@@ -22,21 +22,15 @@ def monitor_directory():
 
         for file in added_files:
             commit_message = f"Created {file}"
-            success = add_and_push(file, commit_message)
-            if success:
-                print(f"Pushed {file}")
+            add_and_push(file, commit_message)
 
         for file in deleted_files:
             commit_message = f"Deleted {file}"
-            success = add_and_push(file, commit_message)
-            if success:
-                print(f"Deleted {file}")
+            add_and_push(file, commit_message)
 
         for file in modified_files:
             commit_message = f"Updated {file}"
-            success = add_and_push(file, commit_message)
-            if success:
-                print(f"Pushed {file}")
+            add_and_push(file, commit_message)
 
         files = current_files
         time.sleep(1)  # Sleep for 1 second before checking again
@@ -44,10 +38,7 @@ def monitor_directory():
 def add_and_push(file, commit_message):
     subprocess.run(["git", "add", file])
     subprocess.run(["git", "commit", "-m", commit_message])
-    result = subprocess.run(["git", "push"], capture_output=True)
-    if result.returncode == 0:
-        return True
-    return False
+    subprocess.run(["git", "push"])
 
 if __name__ == "__main__":
     monitor_directory()
