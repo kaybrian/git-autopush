@@ -27,11 +27,8 @@ def monitor_directory(path="."):
     signal.signal(signal.SIGINT, exit_gracefully)
 
     change_event = threading.Event()  # Event object to signal changes
-    processed_change = False  # Flag to indicate if a change has been processed
-    lock = threading.Lock()  # Lock to ensure exclusive access to add_and_push
 
     def file_monitor():
-        nonlocal processed_change
         while True:
             current_files = {filename: hash_file(filename) for filename in files.keys()}
 
@@ -45,31 +42,31 @@ def monitor_directory(path="."):
 
                 for file in added_files:
                     commit_message = f"Created {os.path.basename(file)}"
-                    with lock:
-                        add_and_push(file, commit_message)
-                    processed_change = True
+                    add_and_push(file, commit_message)
 
                 for file in deleted_files:
                     commit_message = f"Deleted {os.path.basename(file)}"
-                    with lock:
-                        add_and_push(file, commit_message)
-                    processed_change = True
+                    add_and_push(file, commit_message)
 
                 for file in modified_files:
                     commit_message = f"Updated {os.path.basename(file)}"
-                    with lock:
-                        add_and_push(file, commit_message)
-                    processed_change = True
+                    add_and_push(file, commit_message)
 
                 files.update(current_files)
 
-                if processed_change:
-                    change_event.set()  # Signal changes detected
-                    processed_change = False
+                change_event.set()  # Signal changes detected
 
             time.sleep(1)
 
     threading.Thread(target=file_monitor, daemon=True).start()
+
+    lock = threading.Lock()  # Lock to synchronize add_and_push function
+
+    def add_and_push(file, commit_message):
+        with lock:
+            subprocess.run(["git", "add", file])
+            subprocess.run(["git", "commit", "-m", commit_message])
+            subprocess.run(["git", "push"])
 
     while True:
         change_event.wait()  # Wait for changes to be detected
@@ -87,11 +84,5 @@ def hash_file(file):
         file_hash = hashlib.md5(content).hexdigest()
     return file_hash
 
-def add_and_push(file, commit_message):
-    subprocess.run(["git", "add", file])
-    subprocess.run(["git", "commit", "-m", commit_message])
-    subprocess.run(["git", "push"])
-
 if __name__ == "__main__":
     monitor_directory()
-
