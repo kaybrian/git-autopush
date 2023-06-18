@@ -98,6 +98,3 @@ def hash_file(file):
 
 if __name__ == "__main__":
     monitor_directory()
-
-
-# Path: git_autopush/__init__.py
