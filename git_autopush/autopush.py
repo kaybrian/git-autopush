@@ -52,9 +52,7 @@ def monitor_directory(path="."):
                     commit_message = f"Updated {os.path.basename(file)}"
                     add_and_push(file, commit_message)
 
-                files.update(current_files)
-
-                change_event.set()  # Signal changes detected
+                files = current_files.copy()  # Update the files dictionary
 
             time.sleep(1)
 
@@ -69,10 +67,8 @@ def monitor_directory(path="."):
             subprocess.run(["git", "push"])
 
     while True:
-        change_event.wait()  # Wait for changes to be detected
-
-        # Reset the event for the next round of changes
-        change_event.clear()
+        time.sleep(1)  # Sleep to allow changes to be processed
+        change_event.set()  # Signal changes detected
 
 def hash_file(file):
     # Generate the hash of the file content
