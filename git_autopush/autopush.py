@@ -12,7 +12,7 @@ GREEN = "\033[92m"
 
 def monitor_directory(path="."):
     if not os.path.exists(os.path.join(path, ".git")):
-        print("Directory is not a Git repo!")
+        print(f"{RED}Directory is not a Git repo!")
         return
 
     print("Monitoring...")
