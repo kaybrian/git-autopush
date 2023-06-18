@@ -9,8 +9,7 @@ setup(
     author="Chyna",
     author_email="angoyewally@gmail.com",
     description="Automates git functions: git add, git commit, and git push",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
+    license="MIT",
     url="https://github.com/chyna-gvng/git-autopush",
     packages=find_packages(),
     classifiers=[
@@ -28,3 +27,4 @@ setup(
         # List your dependencies here, if any
     ],
 )
+
