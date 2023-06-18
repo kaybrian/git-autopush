@@ -94,8 +94,16 @@ def monitor_directory(path="."):
         # Reset the event for the next round of changes
         change_event.clear()
 
+def hash_file(file):
+    # Generate the hash of the file content
+    with open(file, "rb") as f:
+        content = f.read()
+        file_hash = hashlib.md5(content).hexdigest()
+    return file_hash
+
 if __name__ == "__main__":
     # Redirect the standard output to the custom stream
     sys.stdout = CustomStream()
 
     monitor_directory()
+
