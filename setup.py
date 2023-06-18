@@ -26,4 +26,9 @@ setup(
     install_requires=[
         # List your dependencies here, if any
     ],
+    entry_points={
+        "console_scripts": [
+            "git-autopush = git-autopush.autopush:monitor_directory"
+        ]
+    },
 )
