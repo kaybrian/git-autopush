@@ -71,6 +71,14 @@ def monitor_directory(path="."):
     def add_and_push(file, commit_message):
         with lock:
             with open(os.devnull, "w") as devnull:
+                pull_result = subprocess.run(["git", "pull"], capture_output=True, text=True)
+                if pull_result.returncode == 0:
+                    print(f"{GREEN}Successfully synced with GitHub!{WHITE}")
+                else:
+                    print(f"{RED}Error syncing with GitHub:{WHITE}")
+                    print(pull_result.stderr)
+                    return
+
                 subprocess.run(["git", "add", file], stdout=devnull, stderr=devnull)
                 subprocess.run(["git", "commit", "-m", commit_message], stdout=devnull, stderr=devnull)
                 result = subprocess.run(["git", "push"], capture_output=True, text=True)
@@ -97,4 +105,4 @@ def hash_file(file):
     return file_hash
 
 if __name__ == "__main__":
-    monitor_directory()
+    monitor_directory
