@@ -27,5 +27,3 @@ setup(
         # List your dependencies here, if any
     ],
 )
-
-# Path: .gitignore
