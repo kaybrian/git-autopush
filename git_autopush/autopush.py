@@ -28,6 +28,7 @@ def monitor_directory(path="."):
 
     change_event = threading.Event()  # Event object to signal changes
     processed_change = False  # Flag to indicate if a change has been processed
+    lock = threading.Lock()  # Lock to ensure exclusive access to add_and_push
 
     def file_monitor():
         nonlocal processed_change
@@ -44,17 +45,20 @@ def monitor_directory(path="."):
 
                 for file in added_files:
                     commit_message = f"Created {os.path.basename(file)}"
-                    add_and_push(file, commit_message)
+                    with lock:
+                        add_and_push(file, commit_message)
                     processed_change = True
 
                 for file in deleted_files:
                     commit_message = f"Deleted {os.path.basename(file)}"
-                    add_and_push(file, commit_message)
+                    with lock:
+                        add_and_push(file, commit_message)
                     processed_change = True
 
                 for file in modified_files:
                     commit_message = f"Updated {os.path.basename(file)}"
-                    add_and_push(file, commit_message)
+                    with lock:
+                        add_and_push(file, commit_message)
                     processed_change = True
 
                 files.update(current_files)
@@ -90,4 +94,3 @@ def add_and_push(file, commit_message):
 
 if __name__ == "__main__":
     monitor_directory()
-
