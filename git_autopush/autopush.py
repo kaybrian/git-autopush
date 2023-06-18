@@ -6,7 +6,6 @@ import sys
 import hashlib
 import threading
 
-
 def monitor_directory(path="."):
     if not os.path.exists(os.path.join(path, ".git")):
         print("Directory is not a Git repo!")
@@ -75,23 +74,12 @@ def monitor_directory(path="."):
         # Reset the event for the next round of changes
         change_event.clear()
 
-        # Check if the git output contains "Everything up-to-date"
-        result = subprocess.run(["git", "status"], capture_output=True, text=True)
-        output = result.stdout.strip()
-
-        if "Everything up-to-date" in output:
-            print("\033[92mEverything is up-to-date!\033[0m")
-        else:
-            print(output)
-
-
 def hash_file(file):
     # Generate the hash of the file content
     with open(file, "rb") as f:
         content = f.read()
         file_hash = hashlib.md5(content).hexdigest()
     return file_hash
-
 
 if __name__ == "__main__":
     monitor_directory()
