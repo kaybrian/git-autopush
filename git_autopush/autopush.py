@@ -71,6 +71,13 @@ def monitor_directory(path="."):
     def add_and_push(file, commit_message):
         with lock:
             with open(os.devnull, "w") as devnull:
+                # Check for unstaged changes before pulling
+                status_result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
+                if status_result.stdout.strip():
+                    print(f"{RED}Error syncing with GitHub: Unstaged changes detected.{WHITE}")
+                    print("Automatically stashing changes...")
+                    subprocess.run(["git", "stash"], stdout=devnull, stderr=devnull)
+
                 pull_result = subprocess.run(["git", "pull"], capture_output=True, text=True)
                 if pull_result.returncode == 0:
                     print(f"{GREEN}Successfully synced with GitHub!{WHITE}")
