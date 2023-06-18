@@ -19,7 +19,8 @@ git config --global credential.helper store
 git clone https://github.com/chyna-gvng/git-autopush.git
 ````
 
-- 
+- cd into repo:
+
 - Install locally
 ````
 pip install .
