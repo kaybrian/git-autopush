@@ -1,1 +1,0 @@
-from .autopush import main
