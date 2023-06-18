@@ -3,6 +3,7 @@ import time
 import subprocess
 import signal
 import sys
+import hashlib
 import threading
 
 def monitor_directory(path="."):
@@ -17,7 +18,7 @@ def monitor_directory(path="."):
     for root, dirs, filenames in os.walk(path):
         for filename in filenames:
             full_path = os.path.join(root, filename)
-            files[full_path] = os.stat(full_path).st_mtime
+            files[full_path] = hash_file(full_path)
 
     def exit_gracefully(signal, frame):
         print("\nGoodbye!")
@@ -29,7 +30,7 @@ def monitor_directory(path="."):
 
     def file_monitor():
         while True:
-            current_files = {filename: os.stat(filename).st_mtime for filename in files.keys()}
+            current_files = {filename: hash_file(filename) for filename in files.keys()}
 
             added_files = current_files.keys() - files.keys()
             deleted_files = files.keys() - current_files.keys()
@@ -67,6 +68,13 @@ def monitor_directory(path="."):
 
         # Sleep indefinitely until changes are detected again
         change_event.wait()
+
+def hash_file(file):
+    # Generate the hash of the file content
+    with open(file, "rb") as f:
+        content = f.read()
+        file_hash = hashlib.md5(content).hexdigest()
+    return file_hash
 
 def add_and_push(file, commit_message):
     subprocess.run(["git", "add", file])
