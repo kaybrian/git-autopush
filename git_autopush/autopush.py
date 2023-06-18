@@ -69,9 +69,10 @@ def monitor_directory(path="."):
 
     def add_and_push(file, commit_message):
         with lock:
-            subprocess.run(["git", "add", file])
-            subprocess.run(["git", "commit", "-m", commit_message])
-            subprocess.run(["git", "push"])
+            with open(os.devnull, "w") as devnull:
+                subprocess.run(["git", "add", file], stdout=devnull, stderr=devnull)
+                subprocess.run(["git", "commit", "-m", commit_message], stdout=devnull, stderr=devnull)
+                subprocess.run(["git", "push"], stdout=devnull, stderr=devnull)
 
     while True:
         change_event.wait()  # Wait for changes to be detected
