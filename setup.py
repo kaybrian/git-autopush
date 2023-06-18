@@ -9,6 +9,7 @@ setuptools.setup(
     author="Chyna",
     author_email="angoyewally@gmail.com",
     description="Automates git functions: git add, git commit, and git push",
+    license="MIT",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/chyna-gvng/git-autopush",
