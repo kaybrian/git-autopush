@@ -11,6 +11,21 @@ RED = "\033[91m"
 GREEN = "\033[92m"
 WHITE = "\033[0m"
 
+# Custom stream object to replace standard output
+class CustomStream:
+    def __init__(self):
+        self.buffer = ""
+
+    def write(self, message):
+        self.buffer += message
+
+        # Check for the desired output and replace it with a custom message
+        if "nothing to commit, working tree clean" in self.buffer and "Everything up-to-date" in self.buffer:
+            custom_message = "Everything is up-to-date!\n"
+            self.buffer = self.buffer.replace("nothing to commit, working tree clean\nEverything up-to-date\n", custom_message)
+
+        sys.__stdout__.write(message)
+
 def monitor_directory(path="."):
     if not os.path.exists(os.path.join(path, ".git")):
         print(f"{RED}Directory is not a Git repo!{WHITE}")
@@ -79,12 +94,8 @@ def monitor_directory(path="."):
         # Reset the event for the next round of changes
         change_event.clear()
 
-def hash_file(file):
-    # Generate the hash of the file content
-    with open(file, "rb") as f:
-        content = f.read()
-        file_hash = hashlib.md5(content).hexdigest()
-    return file_hash
-
 if __name__ == "__main__":
+    # Redirect the standard output to the custom stream
+    sys.stdout = CustomStream()
+
     monitor_directory()
