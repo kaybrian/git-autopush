@@ -16,7 +16,7 @@ def monitor_directory(path="."):
         print(f"{RED}Directory is not a Git repo!{WHITE}")
         return
 
-    print(f"{GREEN}Monitoring...")
+    print(f"{GREEN}Monitoring...{WHITE}")
 
     files = {}
 
