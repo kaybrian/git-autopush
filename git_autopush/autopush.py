@@ -53,7 +53,7 @@ def monitor_directory(path="."):
             if len(added_files) == 0 and len(deleted_files) == 0 and len(modified_files) == 0:
                 time.sleep(30)
             else:
-                time.sleep(0.1)  # Sleep for a short interval before checking again
+                time.sleep(1)  # Sleep for a short interval before checking again
 
     except KeyboardInterrupt:
         exit_gracefully(None, None)
