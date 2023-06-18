@@ -76,7 +76,7 @@ def monitor_directory(path="."):
                 result = subprocess.run(["git", "push"], capture_output=True, text=True)
                 
                 if result.returncode == 0:
-                    print(f"Successfully pushed {file}")
+                    print(f"{YELLOW}Successfully pushed {file}{WHITE}")
                 else:
                     print(result.stderr)
 
