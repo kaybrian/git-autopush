@@ -90,3 +90,4 @@ def add_and_push(file, commit_message):
 
 if __name__ == "__main__":
     monitor_directory()
+
