@@ -26,9 +26,6 @@ setuptools.setup(
         "Programming Language :: Python :: 3.9",
     ],
     python_requires=">=3.6",
-    install_requires=[
-        "pyinotify"
-    ],
     entry_points={
         "console_scripts": [
             "git-autopush = git_autopush.autopush:monitor_directory",
