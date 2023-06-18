@@ -9,6 +9,7 @@ import threading
 # ANSI escape codes for colors
 RED = "\033[91m"
 GREEN = "\033[92m"
+YELLOW = "\033[93m"
 WHITE = "\033[0m"
 
 def monitor_directory(path="."):
