@@ -48,7 +48,10 @@ def monitor_directory(path="."):
                 add_and_push(file, commit_message)
 
             files = current_files
-            time.sleep(1)  # Sleep for 1 second before checking again
+
+            # Sleep only if there are no deletion, creation, or updation activities
+            if len(added_files) == 0 and len(deleted_files) == 0 and len(modified_files) == 0:
+                time.sleep(1)
 
     except KeyboardInterrupt:
         exit_gracefully(None, None)
@@ -60,3 +63,4 @@ def add_and_push(file, commit_message):
 
 if __name__ == "__main__":
     monitor_directory()
+
