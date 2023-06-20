@@ -46,6 +46,9 @@ def monitor_directory(path="."):
                 dirs[:] = []  # Exclude subdirectories
                 continue
 
+            if ".git" in root.split(os.path.sep):
+                continue  # Skip .git directory and its subdirectories
+
             for filename in filenames:
                 full_path = os.path.join(root, filename)
                 if not should_ignore(full_path):
@@ -67,6 +70,9 @@ def monitor_directory(path="."):
                 if should_ignore(root):
                     dirs[:] = []  # Exclude subdirectories
                     continue
+
+                if ".git" in root.split(os.path.sep):
+                    continue  # Skip .git directory and its subdirectories
 
                 for filename in filenames:
                     full_path = os.path.join(root, filename)
@@ -148,4 +154,3 @@ def monitor_directory(path="."):
 
 if __name__ == "__main__":
     monitor_directory()
-
