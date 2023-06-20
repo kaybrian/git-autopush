@@ -34,8 +34,11 @@ def monitor_directory(path="."):
     signal.signal(signal.SIGINT, exit_gracefully)
 
     change_event = threading.Event()  # Event object to signal changes
+    changes_processed = False  # Flag to track whether changes have been processed
 
     def file_monitor():
+        nonlocal changes_processed
+
         while True:
             current_files = {}
 
@@ -66,7 +69,12 @@ def monitor_directory(path="."):
 
                 files.update(current_files)
 
-                change_event.set()  # Signal changes detected
+                if not changes_processed:
+                    change_event.set()  # Signal changes detected
+                    changes_processed = True
+
+            else:
+                changes_processed = False
 
             time.sleep(1)
 
@@ -89,6 +97,13 @@ def monitor_directory(path="."):
                 if result.returncode != 0:
                     print(result.stderr)
 
+    def hash_file(file):
+        # Generate the hash of the file content
+        with open(file, "rb") as f:
+            content = f.read()
+            file_hash = hashlib.md5(content).hexdigest()
+        return file_hash
+
     populate_files()
 
     while True:
@@ -97,12 +112,6 @@ def monitor_directory(path="."):
         # Reset the event for the next round of changes
         change_event.clear()
 
-def hash_file(file):
-    # Generate the hash of the file content
-    with open(file, "rb") as f:
-        content = f.read()
-        file_hash = hashlib.md5(content).hexdigest()
-    return file_hash
-
 if __name__ == "__main__":
     monitor_directory()
+
