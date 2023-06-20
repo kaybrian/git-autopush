@@ -55,17 +55,22 @@ def monitor_directory(path="."):
             }
 
             if added_files or deleted_files or modified_files:
+                print(f"{YELLOW}Change detected!{WHITE}")
+
                 for file in added_files:
                     commit_message = f"Created {os.path.basename(file)}"
+                    print(f"{YELLOW}Added: {WHITE}{file}")
                     add_and_push(file, commit_message)
 
                 for file in deleted_files:
                     if not file.startswith("./.git"):
                         commit_message = f"Deleted {os.path.basename(file)}"
+                        print(f"{YELLOW}Deleted: {WHITE}{file}")
                         delete_and_push(file, commit_message)
 
                 for file in modified_files:
                     commit_message = f"Updated {os.path.basename(file)}"
+                    print(f"{YELLOW}Modified: {WHITE}{file}")
                     add_and_push(file, commit_message)
 
                 files.update(current_files)
@@ -109,12 +114,16 @@ def monitor_directory(path="."):
         # Reset the event for the next round of changes
         change_event.clear()
 
+        print(f"{GREEN}Monitoring...{WHITE}")
+
+
 def hash_file(file):
     # Generate the hash of the file content
     with open(file, "rb") as f:
         content = f.read()
         file_hash = hashlib.md5(content).hexdigest()
     return file_hash
+
 
 if __name__ == "__main__":
     monitor_directory()
