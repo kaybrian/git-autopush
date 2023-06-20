@@ -3,4 +3,3 @@ push_to_github.sh
 dist
 git_autopush.egg-info
 build
-test
