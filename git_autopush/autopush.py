@@ -61,7 +61,7 @@ def monitor_directory(path="."):
 
                 for file in deleted_files:
                     commit_message = f"Deleted {os.path.basename(file)}"
-                    add_and_push(file, commit_message)
+                    delete_and_push(file, commit_message)
 
                 for file in modified_files:
                     commit_message = f"Updated {os.path.basename(file)}"
@@ -73,7 +73,7 @@ def monitor_directory(path="."):
             elif changes_processed:
                 for file in deleted_files:
                     commit_message = f"Deleted {os.path.basename(file)}"
-                    add_and_push(file, commit_message)
+                    delete_and_push(file, commit_message)
 
                 files.update(current_files)
                 changes_processed = False
@@ -82,7 +82,7 @@ def monitor_directory(path="."):
 
     threading.Thread(target=file_monitor, daemon=True).start()
 
-    lock = threading.Lock()  # Lock to synchronize add_and_push function
+    lock = threading.Lock()  # Lock to synchronize add_and_push and delete_and_push functions
 
     def add_and_push(file, commit_message):
         with lock:
@@ -99,12 +99,20 @@ def monitor_directory(path="."):
                 if result.returncode != 0:
                     print(result.stderr)
 
-    def hash_file(file):
-        # Generate the hash of the file content
-        with open(file, "rb") as f:
-            content = f.read()
-            file_hash = hashlib.md5(content).hexdigest()
-        return file_hash
+    def delete_and_push(file, commit_message):
+        with lock:
+            with open(os.devnull, "w") as devnull:
+                subprocess.run(["git", "rm", file], stdout=devnull, stderr=devnull)
+                subprocess.run(["git", "commit", "-m", commit_message], stdout=devnull, stderr=devnull)
+                result = subprocess.run(["git", "push"], capture_output=True, text=True)
+
+                if not file.startswith("./.git"):
+                    print(f"{YELLOW}Successfully deleted {WHITE}{file}{WHITE}")
+                else:
+                    print(f"{YELLOW}Successfully deleted {file}{WHITE}")
+
+                if result.returncode != 0:
+                    print(result.stderr)
 
     populate_files()
 
@@ -113,6 +121,13 @@ def monitor_directory(path="."):
 
         # Reset the event for the next round of changes
         change_event.clear()
+
+def hash_file(file):
+    # Generate the hash of the file content
+    with open(file, "rb") as f:
+        content = f.read()
+        file_hash = hashlib.md5(content).hexdigest()
+    return file_hash
 
 if __name__ == "__main__":
     monitor_directory()
