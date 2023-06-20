@@ -5,6 +5,7 @@ import signal
 import sys
 import hashlib
 import threading
+import fnmatch
 
 # ANSI escape codes for colors
 RED = "\033[91m"
@@ -22,11 +23,29 @@ def monitor_directory(path="."):
     files = {}
     deleted_files_set = set()  # Set to track deleted files
 
+    def should_ignore(path):
+        with open(os.path.join(path, ".gitignore"), "r") as gitignore:
+            patterns = gitignore.read().splitlines()
+
+        if ".git" in patterns:
+            return True
+
+        for pattern in patterns:
+            if fnmatch.fnmatch(path, pattern):
+                return True
+
+        return False
+
     def populate_files():
         for root, dirs, filenames in os.walk(path):
+            if should_ignore(root):
+                dirs[:] = []  # Exclude subdirectories
+                continue
+
             for filename in filenames:
                 full_path = os.path.join(root, filename)
-                files[full_path] = hash_file(full_path)
+                if not should_ignore(full_path):
+                    files[full_path] = hash_file(full_path)
 
     def exit_gracefully(signal, frame):
         print(f"{GREEN}\nGoodbye!{WHITE}")
@@ -41,12 +60,14 @@ def monitor_directory(path="."):
             current_files = {}
 
             for root, dirs, filenames in os.walk(path):
-                if ".git" in dirs:
-                    dirs.remove(".git")  # Skip the .git directory
+                if should_ignore(root):
+                    dirs[:] = []  # Exclude subdirectories
+                    continue
 
                 for filename in filenames:
                     full_path = os.path.join(root, filename)
-                    current_files[full_path] = hash_file(full_path)
+                    if not should_ignore(full_path):
+                        current_files[full_path] = hash_file(full_path)
 
             added_files = current_files.keys() - files.keys()
             deleted_files = files.keys() - current_files.keys()
