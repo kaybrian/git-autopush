@@ -47,29 +47,29 @@ def monitor_directory(path="."):
                     full_path = os.path.join(root, filename)
                     current_files[full_path] = hash_file(full_path)
 
-            if current_files != files:  # Check for changes
-                added_files = current_files.keys() - files.keys()
-                deleted_files = files.keys() - current_files.keys()
-                modified_files = {
-                    filename for filename in files.keys() & current_files.keys()
-                    if files[filename] != current_files[filename]
-                }
+            added_files = current_files.keys() - files.keys()
+            deleted_files = files.keys() - current_files.keys()
+            modified_files = {
+                filename for filename in files.keys() & current_files.keys()
+                if files[filename] != current_files[filename]
+            }
 
-                for file in added_files:
-                    commit_message = f"Created {os.path.basename(file)}"
-                    add_and_push(file, commit_message)
+            for file in added_files:
+                commit_message = f"Created {os.path.basename(file)}"
+                add_and_push(file, commit_message)
 
-                for file in deleted_files:
-                    commit_message = f"Deleted {os.path.basename(file)}"
-                    add_and_push(file, commit_message)
+            for file in deleted_files:
+                commit_message = f"Deleted {os.path.basename(file)}"
+                add_and_push(file, commit_message)
 
-                for file in modified_files:
-                    commit_message = f"Updated {os.path.basename(file)}"
-                    add_and_push(file, commit_message)
+            for file in modified_files:
+                commit_message = f"Updated {os.path.basename(file)}"
+                add_and_push(file, commit_message)
 
-                files.update(current_files)
+            files.update(current_files)
 
-                if not changes_processed:
+            if not changes_processed:
+                if added_files or deleted_files or modified_files:
                     change_event.set()  # Signal changes detected
                     changes_processed = True
 
