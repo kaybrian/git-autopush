@@ -99,10 +99,7 @@ def monitor_directory(path="."):
                 subprocess.run(["git", "commit", "-m", commit_message], stdout=devnull, stderr=devnull)
                 result = subprocess.run(["git", "push"], capture_output=True, text=True)
 
-                if not file.startswith("./.git"):
-                    print(f"{YELLOW}Successfully deleted {RED}{file}{WHITE}")
-                else:
-                    print(f"{YELLOW}Successfully deleted {RED}{file}{WHITE}")
+                print(f"{YELLOW}Successfully deleted {RED}{file}{WHITE}")
 
                 if result.returncode != 0:
                     print(result.stderr)
