@@ -34,11 +34,8 @@ def monitor_directory(path="."):
     signal.signal(signal.SIGINT, exit_gracefully)
 
     change_event = threading.Event()  # Event object to signal changes
-    changes_processed = False  # Flag to track whether changes have been processed
 
     def file_monitor():
-        nonlocal changes_processed
-
         while True:
             current_files = {}
 
@@ -68,15 +65,7 @@ def monitor_directory(path="."):
                     add_and_push(file, commit_message)
 
                 files.update(current_files)
-                changes_processed = True
-
-            elif changes_processed:
-                for file in deleted_files:
-                    commit_message = f"Deleted {os.path.basename(file)}"
-                    delete_and_push(file, commit_message)
-
-                files.update(current_files)
-                changes_processed = False
+                change_event.set()  # Signal changes detected
 
             time.sleep(1)
 
@@ -107,7 +96,7 @@ def monitor_directory(path="."):
                 result = subprocess.run(["git", "push"], capture_output=True, text=True)
 
                 if not file.startswith("./.git"):
-                    print(f"{YELLOW}Successfully deleted {RED}{file}{WHITE}")
+                    print(f"{YELLOW}Successfully deleted {WHITE}{file}{WHITE}")
                 else:
                     print(f"{YELLOW}Successfully deleted {file}{WHITE}")
 
