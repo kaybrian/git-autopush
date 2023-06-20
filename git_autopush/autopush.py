@@ -96,9 +96,9 @@ def monitor_directory(path="."):
                 result = subprocess.run(["git", "push"], capture_output=True, text=True)
 
                 if not file.startswith("./.git"):
-                    print(f"{YELLOW}Successfully deleted {WHITE}{file}{WHITE}")
+                    print(f"{YELLOW}Successfully deleted {RED}{file}{WHITE}")
                 else:
-                    print(f"{YELLOW}Successfully deleted {file}{WHITE}")
+                    print(f"{YELLOW}Successfully deleted {RED}{file}{WHITE}")
 
                 if result.returncode != 0:
                     print(result.stderr)
@@ -120,3 +120,4 @@ def hash_file(file):
 
 if __name__ == "__main__":
     monitor_directory()
+
