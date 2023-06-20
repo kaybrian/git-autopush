@@ -111,6 +111,8 @@ def monitor_directory(path="."):
         # Reset the event for the next round of changes
         change_event.clear()
 
+        time.sleep(2)  # Delay to ignore subsequent changes within this period
+
 def hash_file(file):
     # Generate the hash of the file content
     with open(file, "rb") as f:
