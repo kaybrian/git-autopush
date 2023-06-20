@@ -68,6 +68,10 @@ def monitor_directory(path="."):
                         print(f"{YELLOW}Deleted: {WHITE}{file}")
                         delete_and_push(file, commit_message)
 
+                    # Break out of the loop and exit the function if all deleted files have been processed
+                    if not deleted_files:
+                        break
+
                 for file in modified_files:
                     commit_message = f"Updated {os.path.basename(file)}"
                     print(f"{YELLOW}Modified: {WHITE}{file}")
@@ -101,29 +105,28 @@ def monitor_directory(path="."):
                 subprocess.run(["git", "commit", "-m", commit_message], stdout=devnull, stderr=devnull)
                 result = subprocess.run(["git", "push"], capture_output=True, text=True)
 
-                print(f"{YELLOW}Successfully deleted {RED}{file}{WHITE}")
+                print(f"{YELLOW}Successfully deleted {WHITE}{file}{WHITE}")
 
                 if result.returncode != 0:
                     print(result.stderr)
+
+    def hash_file(file_path):
+        hasher = hashlib.md5()
+
+        with open(file_path, "rb") as file:
+            buf = file.read()
+            hasher.update(buf)
+
+        return hasher.hexdigest()
 
     populate_files()
 
     while True:
         change_event.wait()  # Wait for changes to be detected
+        change_event.clear()  # Reset the event
 
-        # Reset the event for the next round of changes
-        change_event.clear()
-
-        print(f"{GREEN}Monitoring...{WHITE}")
-
-
-def hash_file(file):
-    # Generate the hash of the file content
-    with open(file, "rb") as f:
-        content = f.read()
-        file_hash = hashlib.md5(content).hexdigest()
-    return file_hash
-
+        populate_files()
 
 if __name__ == "__main__":
-    monitor_directory()
+    path = "."  # Directory to monitor (current directory by default)
+    monitor_directory(path)
