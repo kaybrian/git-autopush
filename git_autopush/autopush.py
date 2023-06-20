@@ -36,8 +36,6 @@ def monitor_directory(path="."):
     change_event = threading.Event()  # Event object to signal changes
 
     def file_monitor():
-        recent_changes = set()
-
         while True:
             current_files = {}
 
@@ -57,18 +55,14 @@ def monitor_directory(path="."):
                 for file in added_files:
                     commit_message = f"Created {os.path.basename(file)}"
                     add_and_push(file, commit_message)
-                    recent_changes.add(file)
 
                 for file in deleted_files:
                     commit_message = f"Deleted {os.path.basename(file)}"
-                    if file not in recent_changes:
-                        delete_and_push(file, commit_message)
-                    recent_changes.discard(file)
+                    delete_and_push(file, commit_message)
 
                 for file in modified_files:
                     commit_message = f"Updated {os.path.basename(file)}"
                     add_and_push(file, commit_message)
-                    recent_changes.add(file)
 
                 files.update(current_files)
                 change_event.set()  # Signal changes detected
@@ -116,8 +110,6 @@ def monitor_directory(path="."):
 
         # Reset the event for the next round of changes
         change_event.clear()
-
-        time.sleep(2)  # Delay to ignore subsequent changes within this period
 
 def hash_file(file):
     # Generate the hash of the file content
