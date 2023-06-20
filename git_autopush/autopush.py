@@ -24,7 +24,11 @@ def monitor_directory(path="."):
     deleted_files_set = set()  # Set to track deleted files
 
     def should_ignore(path):
-        with open(os.path.join(path, ".gitignore"), "r") as gitignore:
+        gitignore_path = os.path.join(path, ".gitignore")
+        if not os.path.exists(gitignore_path):
+            return False
+
+        with open(gitignore_path, "r") as gitignore:
             patterns = gitignore.read().splitlines()
 
         if ".git" in patterns:
@@ -144,3 +148,4 @@ def monitor_directory(path="."):
 
 if __name__ == "__main__":
     monitor_directory()
+
