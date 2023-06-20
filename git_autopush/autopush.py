@@ -60,8 +60,9 @@ def monitor_directory(path="."):
                     add_and_push(file, commit_message)
 
                 for file in deleted_files:
-                    commit_message = f"Deleted {os.path.basename(file)}"
-                    delete_and_push(file, commit_message)
+                    if not file.startswith("./.git"):
+                        commit_message = f"Deleted {os.path.basename(file)}"
+                        delete_and_push(file, commit_message)
 
                 for file in modified_files:
                     commit_message = f"Updated {os.path.basename(file)}"
@@ -83,7 +84,10 @@ def monitor_directory(path="."):
                 subprocess.run(["git", "commit", "-m", commit_message], stdout=devnull, stderr=devnull)
                 result = subprocess.run(["git", "push"], capture_output=True, text=True)
 
-                print(f"{YELLOW}Successfully processed {WHITE}{file}{WHITE}")
+                if not file.startswith("./.git"):
+                    print(f"{YELLOW}Successfully pushed {WHITE}{file}{WHITE}")
+                else:
+                    print(f"{YELLOW}Successfully pushed {file}{WHITE}")
 
                 if result.returncode != 0:
                     print(result.stderr)
@@ -95,7 +99,10 @@ def monitor_directory(path="."):
                 subprocess.run(["git", "commit", "-m", commit_message], stdout=devnull, stderr=devnull)
                 result = subprocess.run(["git", "push"], capture_output=True, text=True)
 
-                print(f"{YELLOW}Successfully deleted {RED}{file}{WHITE}")
+                if not file.startswith("./.git"):
+                    print(f"{YELLOW}Successfully deleted {RED}{file}{WHITE}")
+                else:
+                    print(f"{YELLOW}Successfully deleted {RED}{file}{WHITE}")
 
                 if result.returncode != 0:
                     print(result.stderr)
