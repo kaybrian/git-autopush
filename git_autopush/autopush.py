@@ -22,32 +22,26 @@ def monitor_directory(path="."):
 
     files = {}
     deleted_files_set = set()  # Set to track deleted files
+    ignore_patterns = []
 
     def should_ignore(path):
-        gitignore_path = os.path.join(path, ".gitignore")
-        if not os.path.exists(gitignore_path):
-            return False
-
-        with open(gitignore_path, "r") as gitignore:
-            patterns = gitignore.read().splitlines()
-
-        if ".git" in patterns or ".git" in os.path.basename(path):
-            return True
-
-        for pattern in patterns:
+        for pattern in ignore_patterns:
             if fnmatch.fnmatch(path, pattern):
                 return True
-
         return False
 
     def populate_files():
         for root, dirs, filenames in os.walk(path):
-            if should_ignore(root):
-                dirs[:] = []  # Exclude subdirectories
-                continue
+            if ".git" in dirs:
+                dirs.remove(".git")  # Skip the .git directory
 
-            if ".git" in root.split(os.path.sep):
-                continue  # Skip .git directory and its subdirectories
+            ignore_path = os.path.join(root, ".gitignore")
+            if os.path.exists(ignore_path):
+                with open(ignore_path, "r") as f:
+                    ignore_patterns.extend([
+                        os.path.join(root, pattern)
+                        for pattern in f.read().splitlines()
+                    ])
 
             for filename in filenames:
                 full_path = os.path.join(root, filename)
@@ -67,12 +61,16 @@ def monitor_directory(path="."):
             current_files = {}
 
             for root, dirs, filenames in os.walk(path):
-                if should_ignore(root):
-                    dirs[:] = []  # Exclude subdirectories
-                    continue
+                if ".git" in dirs:
+                    dirs.remove(".git")  # Skip the .git directory
 
-                if ".git" in root.split(os.path.sep):
-                    continue  # Skip .git directory and its subdirectories
+                ignore_path = os.path.join(root, ".gitignore")
+                if os.path.exists(ignore_path):
+                    with open(ignore_path, "r") as f:
+                        ignore_patterns.extend([
+                            os.path.join(root, pattern)
+                            for pattern in f.read().splitlines()
+                        ])
 
                 for filename in filenames:
                     full_path = os.path.join(root, filename)
