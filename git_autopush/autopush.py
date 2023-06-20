@@ -31,7 +31,7 @@ def monitor_directory(path="."):
         with open(gitignore_path, "r") as gitignore:
             patterns = gitignore.read().splitlines()
 
-        if ".git" in patterns:
+        if ".git" in patterns or ".git" in os.path.basename(path):
             return True
 
         for pattern in patterns:
