@@ -58,18 +58,15 @@ def monitor_directory(path="."):
             if added_files or deleted_files or modified_files:
                 for file in added_files:
                     commit_message = f"Created {os.path.basename(file)}"
-                    sync_with_github()
                     add_and_push(file, commit_message)
 
                 for file in deleted_files:
                     if not file.startswith("./.git"):
                         commit_message = f"Deleted {os.path.basename(file)}"
-                        sync_with_github()
                         delete_and_push(file, commit_message)
 
                 for file in modified_files:
                     commit_message = f"Updated {os.path.basename(file)}"
-                    sync_with_github()
                     add_and_push(file, commit_message)
 
                 files.update(current_files)
@@ -80,25 +77,6 @@ def monitor_directory(path="."):
     threading.Thread(target=file_monitor, daemon=True).start()
 
     lock = threading.Lock()  # Lock to synchronize add_and_push and delete_and_push functions
-
-    def sync_with_github():
-        with open(os.devnull, "w") as devnull:
-            # Try to pull changes from GitHub
-            result = subprocess.run(["git", "pull"], capture_output=True, text=True)
-            if result.returncode != 0:
-                # If there was an error, stash local changes and try pulling again
-                print(f"{RED}Error pulling from GitHub. Stashing local changes...{WHITE}")
-                subprocess.run(["git", "stash"], stdout=devnull, stderr=devnull)
-                result = subprocess.run(["git", "pull"], capture_output=True, text=True)
-                if result.returncode == 0:
-                    print(f"{GREEN}Successfully synced with GitHub!{WHITE}")
-                else:
-                    print(f"{RED}Error syncing with GitHub.{WHITE}")
-                    return False
-            else:
-                print(f"{GREEN}Successfully synced with GitHub!{WHITE}")
-
-        return True
 
     def add_and_push(file, commit_message):
         with lock:
