@@ -116,4 +116,3 @@ def monitor_directory(path="."):
 
 if __name__ == "__main__":
     monitor_directory()
-
