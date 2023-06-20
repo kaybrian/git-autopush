@@ -96,7 +96,7 @@ def monitor_directory(path="."):
                 return  # Skip if file is already marked as deleted
 
             with open(os.devnull, "w") as devnull:
-                subprocess.run(["git", "rm", file], stdout=devnull, stderr=devnull)
+                subprocess.run(["git", "rm", "--cached", file], stdout=devnull, stderr=devnull)
                 subprocess.run(["git", "commit", "-m", commit_message], stdout=devnull, stderr=devnull)
                 result = subprocess.run(["git", "push"], capture_output=True, text=True)
 
