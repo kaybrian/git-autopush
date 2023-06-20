@@ -81,6 +81,7 @@ def monitor_directory(path="."):
                 change_event.set()  # Signal changes detected
 
             time.sleep(1)
+            change_event.clear()  # Clear the event to avoid continuous loop
 
     threading.Thread(target=file_monitor, daemon=True).start()
 
@@ -123,10 +124,11 @@ def monitor_directory(path="."):
 
     while True:
         change_event.wait()  # Wait for changes to be detected
-        change_event.clear()  # Reset the event
+
+        # Reset the event for the next round of changes
+        change_event.clear()
 
         populate_files()
 
 if __name__ == "__main__":
-    path = "."  # Directory to monitor (current directory by default)
-    monitor_directory(path)
+    monitor_directory()
