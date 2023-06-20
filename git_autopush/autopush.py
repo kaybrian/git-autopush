@@ -21,10 +21,11 @@ def monitor_directory(path="."):
 
     files = {}
 
-    for root, dirs, filenames in os.walk(path):
-        for filename in filenames:
-            full_path = os.path.join(root, filename)
-            files[full_path] = hash_file(full_path)
+    def populate_files():
+        for root, dirs, filenames in os.walk(path):
+            for filename in filenames:
+                full_path = os.path.join(root, filename)
+                files[full_path] = hash_file(full_path)
 
     def exit_gracefully(signal, frame):
         print(f"{GREEN}\nGoodbye!{WHITE}")
@@ -36,7 +37,12 @@ def monitor_directory(path="."):
 
     def file_monitor():
         while True:
-            current_files = {filename: hash_file(filename) for filename in files.keys()}
+            current_files = {}
+
+            for root, dirs, filenames in os.walk(path):
+                for filename in filenames:
+                    full_path = os.path.join(root, filename)
+                    current_files[full_path] = hash_file(full_path)
 
             if current_files != files:  # Check for changes
                 added_files = current_files.keys() - files.keys()
@@ -83,6 +89,8 @@ def monitor_directory(path="."):
                 if result.returncode != 0:
                     print(result.stderr)
 
+    populate_files()
+
     while True:
         change_event.wait()  # Wait for changes to be detected
 
@@ -98,3 +106,4 @@ def hash_file(file):
 
 if __name__ == "__main__":
     monitor_directory()
+
