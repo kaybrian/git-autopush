@@ -90,15 +90,21 @@ def monitor_directory(path="."):
 
     def delete_and_push(file, commit_message):
         with lock:
+            if file == os.getcwd():
+                return
+
+            if file not in files:
+                return
+
             with open(os.devnull, "w") as devnull:
                 subprocess.run(["git", "rm", file], stdout=devnull, stderr=devnull)
                 subprocess.run(["git", "commit", "-m", commit_message], stdout=devnull, stderr=devnull)
                 result = subprocess.run(["git", "push"], capture_output=True, text=True)
 
                 if not file.startswith("./.git"):
-                    print(f"{YELLOW}Successfully deleted {RED}{file}{WHITE}")
+                    print(f"{YELLOW}Successfully pushed {WHITE}{file}{WHITE}")
                 else:
-                    print(f"{YELLOW}Successfully deleted {RED}{file}{WHITE}")
+                    print(f"{YELLOW}Successfully pushed {file}{WHITE}")
 
                 if result.returncode != 0:
                     print(result.stderr)
