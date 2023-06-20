@@ -20,6 +20,7 @@ def monitor_directory(path="."):
     print(f"{GREEN}Monitoring...{WHITE}")
 
     files = {}
+    deleted_files_set = set()  # Set to track deleted files
 
     def populate_files():
         for root, dirs, filenames in os.walk(path):
@@ -91,15 +92,26 @@ def monitor_directory(path="."):
 
     def delete_and_push(file, commit_message):
         with lock:
+            if file in deleted_files_set:
+                return  # Skip if file is already marked as deleted
+
             with open(os.devnull, "w") as devnull:
                 subprocess.run(["git", "rm", file], stdout=devnull, stderr=devnull)
                 subprocess.run(["git", "commit", "-m", commit_message], stdout=devnull, stderr=devnull)
                 result = subprocess.run(["git", "push"], capture_output=True, text=True)
 
-                print(f"{YELLOW}Successfully deleted {RED}{file}{WHITE}")
-
-                if result.returncode != 0:
+                if result.returncode == 0:
+                    print(f"{YELLOW}Successfully deleted {RED}{file}{WHITE}")
+                    deleted_files_set.add(file)  # Mark file as deleted to avoid repetition
+                else:
                     print(result.stderr)
+
+    def hash_file(file):
+        # Generate the hash of the file content
+        with open(file, "rb") as f:
+            content = f.read()
+            file_hash = hashlib.md5(content).hexdigest()
+        return file_hash
 
     populate_files()
 
@@ -108,13 +120,6 @@ def monitor_directory(path="."):
 
         # Reset the event for the next round of changes
         change_event.clear()
-
-def hash_file(file):
-    # Generate the hash of the file content
-    with open(file, "rb") as f:
-        content = f.read()
-        file_hash = hashlib.md5(content).hexdigest()
-    return file_hash
 
 if __name__ == "__main__":
     monitor_directory()
