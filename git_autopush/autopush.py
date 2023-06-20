@@ -5,7 +5,6 @@ import signal
 import sys
 import hashlib
 import threading
-import queue
 
 # ANSI escape codes for colors
 RED = "\033[91m"
@@ -21,7 +20,6 @@ def monitor_directory(path="."):
     print(f"{GREEN}Monitoring...{WHITE}")
 
     files = {}
-    message_queue = queue.Queue()
 
     def populate_files():
         for root, dirs, filenames in os.walk(path):
@@ -34,6 +32,8 @@ def monitor_directory(path="."):
         sys.exit(0)
 
     signal.signal(signal.SIGINT, exit_gracefully)
+
+    change_event = threading.Event()  # Event object to signal changes
 
     def file_monitor():
         while True:
@@ -55,74 +55,66 @@ def monitor_directory(path="."):
             }
 
             if added_files or deleted_files or modified_files:
-                print(f"{YELLOW}Change detected!{WHITE}")
-
                 for file in added_files:
                     commit_message = f"Created {os.path.basename(file)}"
-                    print(f"{YELLOW}Added: {WHITE}{file}")
                     add_and_push(file, commit_message)
 
                 for file in deleted_files:
                     if not file.startswith("./.git"):
                         commit_message = f"Deleted {os.path.basename(file)}"
-                        print(f"{YELLOW}Deleted: {WHITE}{file}")
                         delete_and_push(file, commit_message)
-                        message_queue.put(file)  # Add the deleted file to the message queue
-
-                    # Break out of the loop and exit the function if all deleted files have been processed
-                    if not deleted_files:
-                        break
 
                 for file in modified_files:
                     commit_message = f"Updated {os.path.basename(file)}"
-                    print(f"{YELLOW}Modified: {WHITE}{file}")
                     add_and_push(file, commit_message)
 
                 files.update(current_files)
+                change_event.set()  # Signal changes detected
 
             time.sleep(1)
 
     threading.Thread(target=file_monitor, daemon=True).start()
 
+    lock = threading.Lock()  # Lock to synchronize add_and_push and delete_and_push functions
+
     def add_and_push(file, commit_message):
-        with open(os.devnull, "w") as devnull:
-            subprocess.run(["git", "add", file], stdout=devnull, stderr=devnull)
-            subprocess.run(["git", "commit", "-m", commit_message], stdout=devnull, stderr=devnull)
-            result = subprocess.run(["git", "push"], capture_output=True, text=True)
+        with lock:
+            with open(os.devnull, "w") as devnull:
+                subprocess.run(["git", "add", file], stdout=devnull, stderr=devnull)
+                subprocess.run(["git", "commit", "-m", commit_message], stdout=devnull, stderr=devnull)
+                result = subprocess.run(["git", "push"], capture_output=True, text=True)
 
-            print(f"{YELLOW}Successfully pushed {WHITE}{file}{WHITE}")
+                print(f"{YELLOW}Successfully pushed {WHITE}{file}{WHITE}")
 
-            if result.returncode != 0:
-                print(result.stderr)
+                if result.returncode != 0:
+                    print(result.stderr)
 
     def delete_and_push(file, commit_message):
-        with open(os.devnull, "w") as devnull:
-            subprocess.run(["git", "rm", file], stdout=devnull, stderr=devnull)
-            subprocess.run(["git", "commit", "-m", commit_message], stdout=devnull, stderr=devnull)
-            result = subprocess.run(["git", "push"], capture_output=True, text=True)
+        with lock:
+            with open(os.devnull, "w") as devnull:
+                subprocess.run(["git", "rm", file], stdout=devnull, stderr=devnull)
+                subprocess.run(["git", "commit", "-m", commit_message], stdout=devnull, stderr=devnull)
+                result = subprocess.run(["git", "push"], capture_output=True, text=True)
 
-            print(f"{YELLOW}Successfully deleted {WHITE}{file}{WHITE}")
+                print(f"{YELLOW}Successfully deleted {RED}{file}{WHITE}")
 
-            if result.returncode != 0:
-                print(result.stderr)
-
-    def hash_file(file_path):
-        hasher = hashlib.md5()
-
-        with open(file_path, "rb") as file:
-            buf = file.read()
-            hasher.update(buf)
-
-        return hasher.hexdigest()
+                if result.returncode != 0:
+                    print(result.stderr)
 
     populate_files()
 
     while True:
-        try:
-            deleted_file = message_queue.get(timeout=0.1)  # Check for messages in the queue
-            print(f"{YELLOW}Processed message for deleted file: {WHITE}{deleted_file}{WHITE}")
-        except queue.Empty:
-            pass
+        change_event.wait()  # Wait for changes to be detected
+
+        # Reset the event for the next round of changes
+        change_event.clear()
+
+def hash_file(file):
+    # Generate the hash of the file content
+    with open(file, "rb") as f:
+        content = f.read()
+        file_hash = hashlib.md5(content).hexdigest()
+    return file_hash
 
 if __name__ == "__main__":
     monitor_directory()
