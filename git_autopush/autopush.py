@@ -40,6 +40,9 @@ def monitor_directory(path="."):
             current_files = {}
 
             for root, dirs, filenames in os.walk(path):
+                if ".git" in dirs:
+                    dirs.remove(".git")  # Skip the .git directory
+
                 for filename in filenames:
                     full_path = os.path.join(root, filename)
                     current_files[full_path] = hash_file(full_path)
@@ -57,8 +60,9 @@ def monitor_directory(path="."):
                     add_and_push(file, commit_message)
 
                 for file in deleted_files:
-                    commit_message = f"Deleted {os.path.basename(file)}"
-                    delete_and_push(file, commit_message)
+                    if not file.startswith("./.git"):
+                        commit_message = f"Deleted {os.path.basename(file)}"
+                        delete_and_push(file, commit_message)
 
                 for file in modified_files:
                     commit_message = f"Updated {os.path.basename(file)}"
