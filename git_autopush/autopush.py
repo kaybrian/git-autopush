@@ -54,26 +54,28 @@ def monitor_directory(path="."):
                 if files[filename] != current_files[filename]
             }
 
-            for file in added_files:
-                commit_message = f"Created {os.path.basename(file)}"
-                add_and_push(file, commit_message)
+            if added_files or deleted_files or modified_files:
+                for file in added_files:
+                    commit_message = f"Created {os.path.basename(file)}"
+                    add_and_push(file, commit_message)
 
-            for file in deleted_files:
-                commit_message = f"Deleted {os.path.basename(file)}"
-                add_and_push(file, commit_message)
+                for file in deleted_files:
+                    commit_message = f"Deleted {os.path.basename(file)}"
+                    add_and_push(file, commit_message)
 
-            for file in modified_files:
-                commit_message = f"Updated {os.path.basename(file)}"
-                add_and_push(file, commit_message)
+                for file in modified_files:
+                    commit_message = f"Updated {os.path.basename(file)}"
+                    add_and_push(file, commit_message)
 
-            files.update(current_files)
+                files.update(current_files)
+                changes_processed = True
 
-            if not changes_processed:
-                if added_files or deleted_files or modified_files:
-                    change_event.set()  # Signal changes detected
-                    changes_processed = True
+            elif changes_processed:
+                for file in deleted_files:
+                    commit_message = f"Deleted {os.path.basename(file)}"
+                    add_and_push(file, commit_message)
 
-            else:
+                files.update(current_files)
                 changes_processed = False
 
             time.sleep(1)
@@ -114,3 +116,4 @@ def monitor_directory(path="."):
 
 if __name__ == "__main__":
     monitor_directory()
+
