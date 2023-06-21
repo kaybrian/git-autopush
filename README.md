@@ -41,4 +41,4 @@ To exit, press: `CTRL + C`
 - Write dynamic commit messages based on filename & actions.
 - Actively monitor creation, deletion and modifaction of files & thereafter push the changes to github.
 
-NOTE: Built & Teasted on Arch
+NOTE: Built & Tested on Arch
