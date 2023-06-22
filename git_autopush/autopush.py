@@ -107,7 +107,10 @@ def monitor_directory(path="."):
 
     threading.Thread(target=file_monitor, daemon=True).start()
 
-    lock = threading.Lock()  # Lock to synchronize add_and_push and delete_and_push functions
+    """
+        Lock to synchronize add_and_push and delete_and_push functions
+    """
+    lock = threading.Lock()
 
     def add_and_push(file, commit_message):
         with lock:
