@@ -7,14 +7,11 @@ import hashlib
 import threading
 import fnmatch
 
-"""
-    ANSI escape codes for colors
-"""
+# ANSI escape codes for colors
 RED = "\033[91m"
 GREEN = "\033[92m"
 YELLOW = "\033[93m"
 WHITE = "\033[0m"
-
 
 def monitor_directory(path="."):
     if not os.path.exists(os.path.join(path, ".git")):
@@ -24,10 +21,7 @@ def monitor_directory(path="."):
     print(f"{GREEN}Monitoring...{WHITE}")
 
     files = {}
-    """
-        Set to track deleted files
-    """
-    deleted_files_set = set()
+    deleted_files_set = set()  # Set to track deleted files
     ignore_patterns = []
 
     def should_ignore(path):
@@ -39,10 +33,7 @@ def monitor_directory(path="."):
     def populate_files():
         for root, dirs, filenames in os.walk(path):
             if ".git" in dirs:
-                """
-                    Skip the .git directory
-                """
-                dirs.remove(".git")
+                dirs.remove(".git")  # Skip the .git directory
 
             ignore_path = os.path.join(root, ".gitignore")
             if os.path.exists(ignore_path):
@@ -63,10 +54,7 @@ def monitor_directory(path="."):
 
     signal.signal(signal.SIGINT, exit_gracefully)
 
-    """
-        Event object to signal changes
-    """
-    change_event = threading.Event()
+    change_event = threading.Event()  # Event object to signal changes
 
     def file_monitor():
         while True:
@@ -74,10 +62,7 @@ def monitor_directory(path="."):
 
             for root, dirs, filenames in os.walk(path):
                 if ".git" in dirs:
-                    """
-                        Skip the .git directory
-                    """
-                    dirs.remove(".git")
+                    dirs.remove(".git")  # Skip the .git directory
 
                 ignore_path = os.path.join(root, ".gitignore")
                 if os.path.exists(ignore_path):
@@ -114,19 +99,13 @@ def monitor_directory(path="."):
                     add_and_push(file, commit_message)
 
                 files.update(current_files)
-                """
-                    Signal changes to the main thread
-                """
-                change_event.set()
+                change_event.set()  # Signal changes detected
 
             time.sleep(1)
 
     threading.Thread(target=file_monitor, daemon=True).start()
 
-    """
-        Lock to synchronize add_and_push and delete_and_push functions
-    """
-    lock = threading.Lock()
+    lock = threading.Lock()  # Lock to synchronize add_and_push and delete_and_push functions
 
     def add_and_push(file, commit_message):
         with lock:
@@ -143,10 +122,7 @@ def monitor_directory(path="."):
     def delete_and_push(file, commit_message):
         with lock:
             if file in deleted_files_set:
-                """
-                    Skip if file is already marked as deleted
-                """
-                return
+                return  # Skip if file is already marked as deleted
 
             with open(os.devnull, "w") as devnull:
                 subprocess.run(["git", "rm", file], stdout=devnull, stderr=devnull)
@@ -155,17 +131,12 @@ def monitor_directory(path="."):
 
                 if result.returncode == 0:
                     print(f"{YELLOW}Successfully deleted {RED}{file}{WHITE}")
-                    """
-                        Mark file as deleted to avoid repetition
-                    """
-                    deleted_files_set.add(file)
+                    deleted_files_set.add(file)  # Mark file as deleted to avoid repetition
                 else:
                     print(result.stderr)
 
     def hash_file(file):
-        """
-            Generate the hash of the file content
-        """
+        # Generate the hash of the file content
         with open(file, "rb") as f:
             content = f.read()
             file_hash = hashlib.md5(content).hexdigest()
@@ -174,16 +145,10 @@ def monitor_directory(path="."):
     populate_files()
 
     while True:
-        """
-            Wait for changes to be detected
-        """
-        change_event.wait()
+        change_event.wait()  # Wait for changes to be detected
 
-        """
-            Reset the event for the next round of changes
-        """
+        # Reset the event for the next round of changes
         change_event.clear()
-
 
 if __name__ == "__main__":
     monitor_directory()
