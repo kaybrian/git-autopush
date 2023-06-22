@@ -7,7 +7,9 @@ import hashlib
 import threading
 import fnmatch
 
-# ANSI escape codes for colors
+"""
+    ANSI escape codes for colors
+"""
 RED = "\033[91m"
 GREEN = "\033[92m"
 YELLOW = "\033[93m"
