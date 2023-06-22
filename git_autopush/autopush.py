@@ -133,7 +133,10 @@ def monitor_directory(path="."):
 
                 if result.returncode == 0:
                     print(f"{YELLOW}Successfully deleted {RED}{file}{WHITE}")
-                    deleted_files_set.add(file)  # Mark file as deleted to avoid repetition
+                    """
+                        Mark file as deleted to avoid repetition
+                    """
+                    deleted_files_set.add(file)
                 else:
                     print(result.stderr)
 
