@@ -184,5 +184,6 @@ def monitor_directory(path="."):
         """
         change_event.clear()
 
+
 if __name__ == "__main__":
     monitor_directory()
