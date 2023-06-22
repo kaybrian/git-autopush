@@ -125,7 +125,7 @@ def monitor_directory(path="."):
         with lock:
             if file in deleted_files_set:
                 """
-                    # Skip if file is already marked as deleted
+                    Skip if file is already marked as deleted
                 """
                 return
 
