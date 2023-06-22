@@ -149,7 +149,10 @@ def monitor_directory(path="."):
     populate_files()
 
     while True:
-        change_event.wait()  # Wait for changes to be detected
+        """
+            Wait for changes to be detected
+        """
+        change_event.wait()
 
         """
             Reset the event for the next round of changes
