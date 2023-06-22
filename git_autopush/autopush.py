@@ -23,7 +23,10 @@ def monitor_directory(path="."):
     print(f"{GREEN}Monitoring...{WHITE}")
 
     files = {}
-    deleted_files_set = set()  # Set to track deleted files
+    """
+        Set to track deleted files
+    """
+    deleted_files_set = set()
     ignore_patterns = []
 
     def should_ignore(path):
