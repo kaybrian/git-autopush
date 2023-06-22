@@ -124,7 +124,10 @@ def monitor_directory(path="."):
     def delete_and_push(file, commit_message):
         with lock:
             if file in deleted_files_set:
-                return  # Skip if file is already marked as deleted
+                """
+                    # Skip if file is already marked as deleted
+                """
+                return
 
             with open(os.devnull, "w") as devnull:
                 subprocess.run(["git", "rm", file], stdout=devnull, stderr=devnull)
