@@ -101,7 +101,10 @@ def monitor_directory(path="."):
                     add_and_push(file, commit_message)
 
                 files.update(current_files)
-                change_event.set()  # Signal changes detected
+                """
+                    Signal changes to the main thread
+                """
+                change_event.set()
 
             time.sleep(1)
 
