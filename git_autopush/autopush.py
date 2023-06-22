@@ -56,7 +56,10 @@ def monitor_directory(path="."):
 
     signal.signal(signal.SIGINT, exit_gracefully)
 
-    change_event = threading.Event()  # Event object to signal changes
+    """
+        Event object to signal changes
+    """
+    change_event = threading.Event()
 
     def file_monitor():
         while True:
