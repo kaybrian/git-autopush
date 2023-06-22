@@ -35,7 +35,10 @@ def monitor_directory(path="."):
     def populate_files():
         for root, dirs, filenames in os.walk(path):
             if ".git" in dirs:
-                dirs.remove(".git")  # Skip the .git directory
+                """
+                    Skip the .git directory
+                """
+                dirs.remove(".git")
 
             ignore_path = os.path.join(root, ".gitignore")
             if os.path.exists(ignore_path):
