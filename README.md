@@ -42,4 +42,3 @@ To exit, press: `CTRL + C`
 - Actively monitor creation, deletion and modifaction of files & thereafter push the changes to github.
 
 NOTE: Built & Tested on Arch
-
