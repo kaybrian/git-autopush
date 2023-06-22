@@ -151,7 +151,9 @@ def monitor_directory(path="."):
     while True:
         change_event.wait()  # Wait for changes to be detected
 
-        # Reset the event for the next round of changes
+        """
+            Reset the event for the next round of changes
+        """
         change_event.clear()
 
 if __name__ == "__main__":
