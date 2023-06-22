@@ -138,7 +138,9 @@ def monitor_directory(path="."):
                     print(result.stderr)
 
     def hash_file(file):
-        # Generate the hash of the file content
+        """
+            Generate the hash of the file content
+        """
         with open(file, "rb") as f:
             content = f.read()
             file_hash = hashlib.md5(content).hexdigest()
