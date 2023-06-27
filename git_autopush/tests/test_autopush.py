@@ -19,5 +19,6 @@ class TestDirectoryMonitor(unittest.TestCase):
         shutil.rmtree(self.test_dir)
 
     def test_should_ignore(self):
+        self.assertTrue(should_ignore(self.file_path))
         
 
