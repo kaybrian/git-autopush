@@ -16,5 +16,6 @@ class TestDirectoryMonitor(unittest.TestCase):
 
 
     def tearDown(self):
+        shutil.rmtree(self.test_dir)
         
 
