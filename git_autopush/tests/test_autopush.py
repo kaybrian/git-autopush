@@ -5,4 +5,4 @@ import shutil
 import os
 from io import StringIO
 
-class TestDirectory
+class TestDirectoryMonitor()
