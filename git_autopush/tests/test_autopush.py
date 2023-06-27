@@ -8,6 +8,6 @@ from io import StringIO
 class TestDirectoryMonitor(unittest.TestCase):
     def setUp(self):
         self.test_dir = tempfile.mkdtemp()
-        self.path = os.path.join(self.test_dir, ".git")
+        self.git_dir= os.path.join(self.test_dir, ".git")
         os.mkdir(self.path)
 
