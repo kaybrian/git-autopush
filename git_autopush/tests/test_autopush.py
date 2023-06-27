@@ -5,4 +5,5 @@ import shutil
 import os
 from io import StringIO
 
-class TestDirectoryMonitor(unittest.TestCase())
+class TestDirectoryMonitor(unittest.TestCase):
+    
