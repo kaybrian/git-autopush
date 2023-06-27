@@ -10,5 +10,5 @@ class TestDirectoryMonitor(unittest.TestCase):
         self.test_dir = tempfile.mkdtemp()
         self.git_dir= os.path.join(self.test_dir, ".git")
         os.makedirs(self.git_dir)
-        self.file_path = os.
+        self.file_path = os.path.join(self.test_dir, "file")
 
