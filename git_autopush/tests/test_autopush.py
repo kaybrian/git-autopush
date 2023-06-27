@@ -4,3 +4,5 @@ import tempfile
 import shutil
 import os
 from io import StringIO
+
+class Test
