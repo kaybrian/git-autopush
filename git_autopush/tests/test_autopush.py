@@ -11,5 +11,5 @@ class TestDirectoryMonitor(unittest.TestCase):
         self.git_dir= os.path.join(self.test_dir, ".git")
         os.makedirs(self.git_dir)
         self.file_path = os.path.join(self.test_dir, "tests")
-        
+        with open()
 
