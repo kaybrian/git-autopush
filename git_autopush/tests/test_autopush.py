@@ -6,4 +6,5 @@ import os
 from io import StringIO
 
 class TestDirectoryMonitor(unittest.TestCase):
-    def setUp(self)
+    def setUp(self):
+        
