@@ -21,5 +21,5 @@ class TestDirectoryMonitor(unittest.TestCase):
     def test_should_ignore(self):
         self.assertTrue(should_ignore(self.file_path))
 
-    
+
 
