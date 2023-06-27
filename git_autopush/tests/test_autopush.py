@@ -18,5 +18,6 @@ class TestDirectoryMonitor(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_dir)
 
-    
+    def test_should_ignore(self):
+        
 
