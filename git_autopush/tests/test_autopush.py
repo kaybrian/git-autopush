@@ -15,5 +15,5 @@ class TestDirectoryMonitor(unittest.TestCase):
             f.write("Test file")
 
 
-    def test
+    def tearDown(self)
 
