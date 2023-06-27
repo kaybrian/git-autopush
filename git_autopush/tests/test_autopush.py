@@ -12,5 +12,5 @@ class TestDirectoryMonitor(unittest.TestCase):
         os.makedirs(self.git_dir)
         self.file_path = os.path.join(self.test_dir, "tests")
         with open(self.file_path, 'w') as f:
-            f.write("Test ")
+            f.write("Test file")
 
